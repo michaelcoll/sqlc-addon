@@ -11,6 +11,10 @@ This CLI will generate two new files :
 
 ## How to install ?
 
+```shell
+go install github.com/michaelcoll/sqlc-addon@latest
+```
+
 ## How to use ?
 Place a new config file called `sqlc-addon.yaml` next to the sqlc config file.
 
@@ -23,5 +27,5 @@ database_name: "data.db"
 
 Call the command in the same folder as the file `sqlc-addon.yaml` :
 ```shell
-sqlc-addon write
+sqlc-addon generate
 ```
