@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -32,17 +33,32 @@ var serveCmd = &cobra.Command{
 	Long: `
 Writes the new code`,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := addon.WriteTemplate(".", "connect.go.gotmpl")
+		_, err := os.Stat("sqlc-addon.yaml")
 		if err != nil {
-			fmt.Printf("%s Can't write connect.go file : %v\n", color.RedString("✗"), err)
+			if !quiet {
+				fmt.Printf("%s sqlc-addon.yaml not found !\n", color.RedString("✗"))
+			}
+			os.Exit(-1)
+		}
+		err = addon.WriteTemplate(".", "connect.go.gotmpl")
+		if err != nil {
+			if !quiet {
+				fmt.Printf("%s Can't write connect.go file : %v\n", color.RedString("✗"), err)
+			}
+			os.Exit(-1)
 		}
 
 		err = addon.WriteTemplate(".", "migration.go.gotmpl")
 		if err != nil {
-			fmt.Printf("%s Can't write mgration.go file : %v\n", color.RedString("✗"), err)
+			if !quiet {
+				fmt.Printf("%s Can't write mgration.go file : %v\n", color.RedString("✗"), err)
+			}
+			os.Exit(-1)
 		}
 
-		fmt.Printf("%s file connect.go and mgration.go files created 🎉\n", color.GreenString("✓"))
+		if !quiet {
+			fmt.Printf("%s file connect.go and mgration.go files created 🎉\n", color.GreenString("✓"))
+		}
 	},
 }
 

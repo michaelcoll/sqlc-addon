@@ -34,6 +34,8 @@ var version = "v0.0.0"
 
 var verbose bool
 
+var quiet bool
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
@@ -47,4 +49,5 @@ func init() {
 	rootCmd.Version = version
 
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "Verbose display")
+	rootCmd.PersistentFlags().BoolVarP(&quiet, "quiet", "q", false, "Hide messages when there is a problem or a success")
 }
