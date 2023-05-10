@@ -40,7 +40,7 @@ Generates the new code`,
 			}
 			os.Exit(-1)
 		}
-		err = addon.WriteTemplate(".", "connect.go.gotmpl")
+		err = addon.WriteTemplate(".", "connect.go.gotmpl", version)
 		if err != nil {
 			if !quiet {
 				fmt.Printf("%s Can't write connect.go file : %v\n", color.RedString("✗"), err)
@@ -48,7 +48,7 @@ Generates the new code`,
 			os.Exit(-1)
 		}
 
-		err = addon.WriteTemplate(".", "migration.go.gotmpl")
+		err = addon.WriteTemplate(".", "migration.go.gotmpl", version)
 		if err != nil {
 			if !quiet {
 				fmt.Printf("%s Can't write mgration.go file : %v\n", color.RedString("✗"), err)

@@ -14,8 +14,9 @@ type SqlcAddonConf struct {
 }
 
 type TemplateValues struct {
-	DatabaseName   string
-	MigrationFiles []MigrationFile
+	DatabaseName     string
+	MigrationFiles   []MigrationFile
+	SqlcAddonVersion string
 }
 
 type MigrationFile struct {

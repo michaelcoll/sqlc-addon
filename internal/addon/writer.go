@@ -99,7 +99,7 @@ func listMigrationFilesInFolder(folder string) ([]MigrationFile, error) {
 	return filenames, nil
 }
 
-func WriteTemplate(baseDir string, templateName string) error {
+func WriteTemplate(baseDir string, templateName string, sqlcAddonVersion string) error {
 	conf, err := readSqlcConf(baseDir)
 	if err != nil {
 		return err
@@ -126,8 +126,9 @@ func WriteTemplate(baseDir string, templateName string) error {
 	defer file.Close()
 
 	values := TemplateValues{
-		DatabaseName:   addonConf.DatabaseName,
-		MigrationFiles: migrationFiles,
+		DatabaseName:     addonConf.DatabaseName,
+		MigrationFiles:   migrationFiles,
+		SqlcAddonVersion: sqlcAddonVersion,
 	}
 
 	tmplFS, _ := fs.Sub(templates, "templates")

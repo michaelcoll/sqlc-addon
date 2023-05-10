@@ -1,5 +1,5 @@
 build:
-	go build -v -ldflags="-s -w -X 'github.com/michaelcoll/sqlc-addon/cmd.version=v0.0.0'" .
+	go build -v -ldflags="-s -w" .
 
 .PHONY: test
 test:
