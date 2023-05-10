@@ -28,10 +28,10 @@ import (
 
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
-	Use:   "write",
-	Short: "Writes the new code",
+	Use:   "generate",
+	Short: "Generates the new code",
 	Long: `
-Writes the new code`,
+Generates the new code`,
 	Run: func(cmd *cobra.Command, args []string) {
 		_, err := os.Stat("sqlc-addon.yaml")
 		if err != nil {
