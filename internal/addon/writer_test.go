@@ -17,12 +17,12 @@ func Test_readConf(t *testing.T) {
 }
 
 func TestWriteTemplate(t *testing.T) {
-	err := WriteTemplate("../../test", "migration.go.gotmpl")
+	err := WriteTemplate("../../test", "migration.go.gotmpl", "v0.0.0")
 	if err != nil {
 		assert.Fail(t, "Can't write", "%v", err)
 	}
 
-	err = WriteTemplate("../../test", "connect.go.gotmpl")
+	err = WriteTemplate("../../test", "connect.go.gotmpl", "v0.0.0")
 	if err != nil {
 		assert.Fail(t, "Can't write", "%v", err)
 	}
