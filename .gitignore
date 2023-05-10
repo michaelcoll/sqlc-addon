@@ -1,0 +1,12 @@
+# ide
+.idea/*
+!.idea/runConfigurations
+!.idea/codeStyles
+!.idea/inspectionProfiles
+!.idea/copyright
+*.iml
+
+# build
+connect.go
+migration.go
+sqlc-addon

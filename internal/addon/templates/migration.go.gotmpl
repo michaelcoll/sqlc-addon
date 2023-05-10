@@ -1,0 +1,134 @@
+package db
+
+import (
+	"database/sql"
+	"log"
+)
+
+const testVersionTableExists = `
+SELECT COUNT(name) FROM sqlite_master WHERE type='table' AND name='db_version';
+`
+
+const initSql = `
+CREATE TABLE db_version
+(
+    version_number INTEGER NOT NULL
+);
+INSERT INTO db_version (version_number) VALUES (0);
+`
+
+const selectVersionStmt = `
+SELECT version_number FROM db_version;
+`
+
+const updateVersionStmt = `
+UPDATE db_version
+SET version_number = ?
+WHERE 1;
+`
+
+{{ with .MigrationFiles }}{{ range . }}const {{ .Name }} = `
+{{ .Content }}
+`
+
+{{ end }}{{ end }}var migrations = map[int]string{
+	{{ range .MigrationFiles }}{{ .Version }}: {{ .Name }},{{ if not .Last }}
+	{{ end }}{{ end }}
+}
+
+type DB interface {
+	Exec(string, ...interface{}) (sql.Result, error)
+	Prepare(string) (*sql.Stmt, error)
+}
+
+// New creates a new instance of Migrations struct
+func New(db DB) *Migrations {
+	return &Migrations{db: db}
+}
+
+type Migrations struct {
+	db DB
+}
+
+// Migrate migrates the database using the migration scripts provided
+func (m *Migrations) Migrate() {
+	initialized, err := m.isInitialized()
+	if err != nil {
+		log.Fatalf("Can't detect if database is initialized %v", err)
+	}
+	if initialized {
+		version, err := m.getVersion()
+		if err != nil {
+			log.Fatalf("Can't read database version %v", err)
+		}
+		m.applyMigration(version)
+	} else {
+		m.createDBVersionTable()
+		m.applyMigration(0)
+	}
+}
+
+// isInitialized checks if the table db_version is present in the current database
+func (m *Migrations) isInitialized() (bool, error) {
+	stmt, err := m.db.Prepare(testVersionTableExists)
+	if err != nil {
+		return false, err
+	}
+	defer stmt.Close()
+
+	var tablePresent int
+	err = stmt.QueryRow().Scan(&tablePresent)
+	if err != nil {
+		return false, err
+	}
+
+	return tablePresent == 1, nil
+}
+
+// getVersion returns the current version of the schema
+func (m *Migrations) getVersion() (int, error) {
+	stmt, err := m.db.Prepare(selectVersionStmt)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+
+	var version int
+	err = stmt.QueryRow().Scan(&version)
+	if err != nil {
+		return 0, err
+	}
+
+	return version, nil
+}
+
+// applyMigration a migration
+func (m *Migrations) createDBVersionTable() {
+	_, err := m.db.Exec(initSql)
+	if err != nil {
+		log.Fatalf("Could not create db_version table %v", err)
+	}
+}
+
+// applyMigration a migration
+func (m *Migrations) applyMigration(fromVersion int) {
+	updStmt, err := m.db.Prepare(updateVersionStmt)
+	if err != nil {
+		log.Fatalf("Could not prepare Stmt : %v", err)
+	}
+	defer updStmt.Close()
+
+	for version, script := range migrations {
+		if version > fromVersion {
+			_, err := m.db.Exec(script)
+			if err != nil {
+				log.Fatalf("Could not apply migration : %s, %v", script, err)
+			}
+
+			_, err = updStmt.Exec(version)
+			if err != nil {
+				log.Fatalf("Could not update version : %v", err)
+			}
+		}
+	}
+}
