@@ -3,11 +3,7 @@ build:
 
 .PHONY: test
 test:
-	go test -v ./...
-
-.PHONY: vet
-vet: ## check go code
-	@go vet ./...
+	go test -vet=all ./...
 
 dep-upgrade:
 	go get -u
