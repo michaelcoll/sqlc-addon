@@ -4,10 +4,9 @@ go 1.20
 
 require (
 	github.com/fatih/color v1.15.0
-	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/spf13/cobra v1.7.0
 	github.com/stoewer/go-strcase v1.3.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v3 v3.0.1
 )
 
