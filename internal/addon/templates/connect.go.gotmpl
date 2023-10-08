@@ -46,6 +46,7 @@ func getDBUrl(readOnly bool, databaseLocation string) string {
 }
 
 func Init(databaseLocation string) *sql.DB {
+    logLocation(databaseLocation)
 	conn := Connect(false, databaseLocation)
 	activateForeignKeys(conn)
 	New(conn).Migrate()
@@ -61,6 +62,16 @@ func Init(databaseLocation string) *sql.DB {
 	}()
 
 	return conn
+}
+
+func logLocation(databaseLocation string) {
+    path, err := os.Getwd()
+    if err != nil {
+        panic(err)
+    }
+    fullPath := fmt.Sprintf("%s/%s/data.db", path, databaseLocation)
+
+    fmt.Printf("%s Storing database in %s\n", color.HiYellowString("i"), color.BlueString(fullPath))
 }
 
 func activateForeignKeys(conn *sql.DB) {
