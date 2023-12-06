@@ -66,20 +66,26 @@ func Init(databaseLocation string) *sql.DB {
 	return conn
 }
 
-func logLocation(databaseLocation string) {
-    fullPath := ""
-    if strings.HasPrefix(databaseLocation, "/") {
-        fullPath = fmt.Sprintf("%s/data.db", databaseLocation)
-    } else {
-        path, err := os.Getwd()
-        if err != nil {
-            log.Fatalf("Can't read current working directory (%v)\n", err)
-            os.Exit(-1)
-        }
-        fullPath = fmt.Sprintf("%s/%s/data.db", path, databaseLocation)
-    }
+func GetDatabaseFullPath(databaseLocation string) string {
+	fullPath := ""
+	if strings.HasPrefix(databaseLocation, "/") {
+		fullPath = fmt.Sprintf("%s/data.db", databaseLocation)
+	} else {
+		path, err := os.Getwd()
+		if err != nil {
+			log.Fatalf("Can't read current working directory (%v)\n", err)
+			os.Exit(-1)
+		}
+		fullPath = fmt.Sprintf("%s/%s/data.db", path, databaseLocation)
+	}
 
-    fmt.Printf("%s Storing database in %s\n", color.HiYellowString("i"), color.BlueString(fullPath))
+	return fullPath
+}
+
+func logLocation(databaseLocation string) {
+	fmt.Printf("%s Storing database in %s\n", 
+		color.HiYellowString("i"), 
+		color.BlueString(GetDatabaseFullPath(databaseLocation)))
 }
 
 func activateForeignKeys(conn *sql.DB) {
