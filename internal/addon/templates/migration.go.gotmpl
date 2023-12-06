@@ -40,6 +40,11 @@ WHERE 1;
 	{{ end }}{{ end }}
 }
 
+var migrationVersions = []int{
+	{{ range .MigrationFiles }}{{ .Version }},{{ if not .Last }}
+    {{ end }}{{ end }}
+}
+
 type DB interface {
 	Exec(string, ...interface{}) (sql.Result, error)
 	Prepare(string) (*sql.Stmt, error)
@@ -122,7 +127,8 @@ func (m *Migrations) applyMigration(fromVersion int) {
 	}
 	defer updStmt.Close()
 
-	for version, script := range migrations {
+	for version := range migrationVersions {
+		script := migrations[version]
 		if version > fromVersion {
 			_, err := m.db.Exec(script)
 			if err != nil {

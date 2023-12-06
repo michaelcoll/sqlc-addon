@@ -30,7 +30,7 @@ var rootCmd = &cobra.Command{
 The command that adds new code to connect to the DB.`,
 }
 
-var version = "v1.9.2"
+var version = "v1.9.3"
 
 var verbose bool
 
