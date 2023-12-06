@@ -48,7 +48,7 @@ func getDBUrl(readOnly bool, databaseLocation string) string {
 }
 
 func Init(databaseLocation string) *sql.DB {
-    logLocation(databaseLocation)
+	logLocation(databaseLocation)
 	conn := Connect(false, databaseLocation)
 	activateForeignKeys(conn)
 	New(conn).Migrate()
