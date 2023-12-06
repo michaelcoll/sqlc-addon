@@ -1,6 +1,6 @@
 module github.com/michaelcoll/sqlc-addon
 
-go 1.20
+go 1.21
 
 require (
 	github.com/fatih/color v1.16.0
@@ -17,6 +17,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/sys v0.14.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 
 )
