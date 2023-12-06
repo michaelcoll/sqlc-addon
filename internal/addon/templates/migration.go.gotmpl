@@ -6,7 +6,10 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+
+	"github.com/fatih/color"
 )
 
 const testVersionTableExists = `
@@ -42,7 +45,7 @@ WHERE 1;
 
 var migrationVersions = []int{
 	{{ range .MigrationFiles }}{{ .Version }},{{ if not .Last }}
-    {{ end }}{{ end }}
+	{{ end }}{{ end }}
 }
 
 type DB interface {
@@ -70,11 +73,21 @@ func (m *Migrations) Migrate() {
 		if err != nil {
 			log.Fatalf("Can't read database version %v", err)
 		}
-		m.applyMigration(version)
+		if m.needsMigration(version) {
+			m.applyMigration(version)
+		} else {
+			fmt.Printf("%s Database is up to date (v%d)\n",
+				color.HiBlueString("i"), version)
+		}
 	} else {
 		m.createDBVersionTable()
 		m.applyMigration(0)
 	}
+}
+
+// needsMigration checks if the database needs to be migrated
+func (m *Migrations) needsMigration(currentVersion int) bool {
+	return currentVersion < len(migrations)
 }
 
 // isInitialized checks if the table db_version is present in the current database
@@ -127,9 +140,14 @@ func (m *Migrations) applyMigration(fromVersion int) {
 	}
 	defer updStmt.Close()
 
-	for version := range migrationVersions {
+	for _, version := range migrationVersions {
 		script := migrations[version]
 		if version > fromVersion {
+
+			fmt.Printf("%s Applying database migration v%d\n",
+				color.HiBlueString("i"),
+				version)
+
 			_, err := m.db.Exec(script)
 			if err != nil {
 				log.Fatalf("Could not apply migration : %s, %v", script, err)
