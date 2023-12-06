@@ -10,10 +10,10 @@ import (
 	"log"
 	"os"
 	"os/signal"
-    "strings"
+	"strings"
 	"syscall"
 
-    "github.com/fatih/color"
+	"github.com/fatih/color"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -83,8 +83,8 @@ func GetDatabaseFullPath(databaseLocation string) string {
 }
 
 func logLocation(databaseLocation string) {
-	fmt.Printf("%s Storing database in %s\n", 
-		color.HiYellowString("i"), 
+	fmt.Printf("%s Storing database in %s\n",
+		color.HiYellowString("i"),
 		color.BlueString(GetDatabaseFullPath(databaseLocation)))
 }
 
